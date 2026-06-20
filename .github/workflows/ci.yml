@@ -1,0 +1,85 @@
+name: Atlas One CI
+
+on:
+  pull_request:
+    branches: ["main"]
+  push:
+    branches: ["main"]
+
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: policy-engine
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+      - name: Ruff lint
+        run: ruff check app
+      - name: Pytest
+        run: pytest -q
+      - name: Build verification
+        run: python -m py_compile app/main.py
+
+  frontend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: dashboard
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: npm install
+        run: npm install
+      - name: ESLint
+        run: npm run lint
+      - name: TypeScript check
+        run: npm run typecheck
+      - name: Build
+        run: npm run build
+
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate compose
+        run: docker compose config
+      - name: Build images
+        run: docker compose build gateway dashboard policy-engine
+
+  security:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install security tools
+        run: |
+          pip install bandit safety
+      - name: Bandit
+        run: bandit -r policy-engine/app
+      - name: Safety
+        run: safety check -r policy-engine/requirements.txt --full-report
+      - name: Install Trivy
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y wget gnupg lsb-release
+          wget -qO - https://aquasecurity.github.io/trivy-repo/deb/public.key | sudo gpg --dearmor -o /usr/share/keyrings/trivy.gpg
+          echo "deb [signed-by=/usr/share/keyrings/trivy.gpg] https://aquasecurity.github.io/trivy-repo/deb $(lsb_release -sc) main" | sudo tee /etc/apt/sources.list.d/trivy.list
+          sudo apt-get update
+          sudo apt-get install -y trivy
+      - name: Trivy file scan
+        run: trivy fs . --severity CRITICAL,HIGH --exit-code 1
+      - name: Secret scanning
+        uses: trufflesecurity/trufflehog@v3.82.6
+        with:
+          path: ./
+

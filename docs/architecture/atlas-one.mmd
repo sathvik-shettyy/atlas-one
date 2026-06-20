@@ -1,0 +1,11 @@
+flowchart TD
+	U[User] --> G[Atlas One Gateway :8080]
+	G --> D[Atlas One Dashboard]
+	G --> I[Atlas One Identity Engine]
+	I --> KC[Keycloak OIDC]
+	I --> MFA[MFA Verification]
+	G --> P[Atlas One Policy Engine]
+	P --> DB[(PostgreSQL)]
+	P --> APP[Atlas One Workspace]
+	APP --> DASHY[Dashy Internal Service :4000]
+

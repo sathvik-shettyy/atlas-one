@@ -1,0 +1,182 @@
+:root {
+	--bg-0: #08131b;
+	--bg-1: #102736;
+	--panel: rgba(9, 22, 32, 0.82);
+	--line: rgba(89, 176, 197, 0.22);
+	--text: #e6f3f8;
+	--muted: #9cc2cf;
+	--primary: #24c6d8;
+	--success: #6ce5a2;
+	--warning: #ffc262;
+	--danger: #ff8f8f;
+	font-family: "Segoe UI", "Trebuchet MS", "Franklin Gothic Medium", sans-serif;
+}
+
+* {
+	box-sizing: border-box;
+}
+
+body {
+	margin: 0;
+	min-height: 100vh;
+	color: var(--text);
+	background:
+		radial-gradient(circle at 10% 10%, #1f576b 0%, transparent 40%),
+		radial-gradient(circle at 90% 20%, #21425f 0%, transparent 35%),
+		linear-gradient(140deg, var(--bg-0), var(--bg-1));
+}
+
+a {
+	color: inherit;
+}
+
+.page {
+	margin: 0 auto;
+	padding: 2rem;
+	max-width: 1100px;
+}
+
+.page-login {
+	min-height: 100vh;
+	display: grid;
+	place-items: center;
+}
+
+.top-bar {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 1rem;
+}
+
+.eyebrow {
+	text-transform: uppercase;
+	color: var(--primary);
+	letter-spacing: 0.16em;
+	font-size: 0.75rem;
+	margin-bottom: 0.4rem;
+}
+
+.status-grid {
+	margin-top: 1.5rem;
+	display: grid;
+	gap: 1rem;
+	grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+}
+
+.status-card,
+.panel,
+.glass-panel {
+	border: 1px solid var(--line);
+	background: var(--panel);
+	border-radius: 14px;
+	backdrop-filter: blur(8px);
+}
+
+.status-card {
+	padding: 1rem;
+}
+
+.status-card header {
+	color: var(--muted);
+	margin-bottom: 0.6rem;
+}
+
+.status-pill {
+	display: inline-block;
+	border-radius: 999px;
+	padding: 0.3rem 0.8rem;
+	font-weight: 600;
+}
+
+.status-pill.healthy {
+	background: color-mix(in srgb, var(--success) 25%, transparent);
+	color: var(--success);
+}
+
+.status-pill.warning {
+	background: color-mix(in srgb, var(--warning) 25%, transparent);
+	color: var(--warning);
+}
+
+.panel {
+	margin-top: 1.2rem;
+	padding: 1rem 1.2rem;
+}
+
+.app-item {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 1rem;
+}
+
+.primary-link,
+button {
+	border: 0;
+	border-radius: 10px;
+	text-decoration: none;
+	background: linear-gradient(90deg, #0fa6ba, var(--primary));
+	color: #03252f;
+	font-weight: 700;
+	padding: 0.65rem 1rem;
+	cursor: pointer;
+}
+
+.ghost-button {
+	background: transparent;
+	color: var(--text);
+	border: 1px solid var(--line);
+}
+
+.meta-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+	gap: 1rem;
+}
+
+.glass-panel {
+	width: min(460px, 95vw);
+	padding: 1.4rem;
+}
+
+.atlas-form {
+	margin-top: 0.8rem;
+	display: grid;
+	gap: 0.8rem;
+}
+
+.atlas-form label {
+	display: grid;
+	gap: 0.3rem;
+	color: var(--muted);
+}
+
+.atlas-form input {
+	background: rgba(0, 0, 0, 0.25);
+	border: 1px solid var(--line);
+	border-radius: 10px;
+	color: var(--text);
+	padding: 0.6rem 0.7rem;
+}
+
+.error-text {
+	color: var(--danger);
+}
+
+@media (max-width: 720px) {
+	.page {
+		padding: 1rem;
+	}
+
+	.top-bar {
+		align-items: flex-start;
+		flex-direction: column;
+	}
+
+	.app-item {
+		flex-direction: column;
+		align-items: flex-start;
+	}
+}
+

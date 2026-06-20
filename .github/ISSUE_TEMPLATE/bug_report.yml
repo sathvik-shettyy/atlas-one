@@ -1,0 +1,29 @@
+name: Bug Report
+description: Report a defect in Atlas One
+title: "[Bug] "
+labels: ["bug"]
+body:
+	- type: textarea
+		id: description
+		attributes:
+			label: Description
+			description: What happened and what did you expect?
+		validations:
+			required: true
+	- type: textarea
+		id: steps
+		attributes:
+			label: Reproduction Steps
+			description: How can maintainers reproduce this?
+			placeholder: |
+				1. Start stack with docker compose up -d
+				2. Open localhost:8080
+				3. ...
+		validations:
+			required: true
+	- type: textarea
+		id: logs
+		attributes:
+			label: Logs / Screenshots
+			description: Relevant output, traces, or screenshots
+

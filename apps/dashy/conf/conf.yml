@@ -1,0 +1,41 @@
+appConfig:
+  title: Atlas One Workspace
+  description: Protected by Atlas One Gateway and Policy Engine
+  icon: mdi-shield-lock
+  language: en
+  theme: colorful
+  layout: auto
+  startingView: default
+  faviconApi: local
+  statusCheck: true
+  statusCheckInterval: 10
+  webSearch:
+    disableWebSearch: true
+  customCss: |
+    :root {
+      --background: #07141d;
+      --background-darker: #0e2d3a;
+      --item-group-background: #0d202e;
+      --item-hover-background: #12374a;
+      --primary: #24c6d8;
+      --text: #e6f3f8;
+    }
+    .header, .about, .search { display: none !important; }
+
+sections:
+  - name: Atlas One Workspace
+    icon: mdi-view-dashboard
+    items:
+      - title: Atlas One Dashboard
+        description: Return to Atlas One control center
+        icon: mdi-shield-account
+        url: http://localhost:8080/
+      - title: Incident Notes
+        description: Example protected workspace tile
+        icon: mdi-notebook-multiple
+        url: https://example.com
+      - title: Threat Intel
+        description: Example protected workspace tile
+        icon: mdi-radar
+        url: https://example.com
+

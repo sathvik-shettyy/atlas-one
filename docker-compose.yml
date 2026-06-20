@@ -1,0 +1,136 @@
+name: atlas-one
+
+services:
+  gateway:
+    image: nginx:1.27-alpine
+    container_name: atlas-one-gateway
+    restart: unless-stopped
+    depends_on:
+      dashboard:
+        condition: service_healthy
+      policy-engine:
+        condition: service_healthy
+      dashy:
+        condition: service_healthy
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./gateway/nginx.conf:/etc/nginx/nginx.conf:ro
+    networks:
+      - atlas-net
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O- http://127.0.0.1:8080/healthz || exit 1"]
+      interval: 20s
+      timeout: 5s
+      retries: 5
+
+  dashboard:
+    build:
+      context: ./dashboard
+      dockerfile: Dockerfile
+    container_name: atlas-one-dashboard
+    restart: unless-stopped
+    env_file:
+      - .env
+    networks:
+      - atlas-net
+    healthcheck:
+      test: ["CMD-SHELL", "node -e \"fetch('http://localhost:3000').then(()=>process.exit(0)).catch(()=>process.exit(1))\""]
+      interval: 20s
+      timeout: 5s
+      retries: 5
+
+  policy-engine:
+    build:
+      context: ./policy-engine
+      dockerfile: Dockerfile
+    container_name: atlas-one-policy
+    restart: unless-stopped
+    env_file:
+      - .env
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - atlas-net
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O- http://localhost:8081/health || exit 1"]
+      interval: 20s
+      timeout: 5s
+      retries: 5
+
+  postgres:
+    image: postgres:16-alpine
+    container_name: atlas-one-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - atlas-postgres-data:/var/lib/postgresql/data
+      - ./database/postgres/init:/docker-entrypoint-initdb.d:ro
+    networks:
+      - atlas-net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  identity:
+    image: quay.io/keycloak/keycloak:25.0.4
+    container_name: atlas-one-auth
+    restart: unless-stopped
+    command:
+      - start-dev
+      - --import-realm
+      - --http-port=8090
+    env_file:
+      - .env
+    environment:
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB}
+      KC_DB_USERNAME: ${POSTGRES_USER}
+      KC_DB_PASSWORD: ${POSTGRES_PASSWORD}
+      KC_BOOTSTRAP_ADMIN_USERNAME: ${KEYCLOAK_ADMIN_USER}
+      KC_BOOTSTRAP_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
+      KC_HOSTNAME_STRICT: "false"
+      KC_PROXY_HEADERS: xforwarded
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - ./keycloak/realm:/opt/keycloak/data/import:ro
+    networks:
+      - atlas-net
+    healthcheck:
+      test: ["CMD-SHELL", "bash -c '</dev/tcp/127.0.0.1/8090' || exit 1"]
+      interval: 25s
+      timeout: 5s
+      retries: 10
+
+  dashy:
+    image: lissy93/dashy:latest
+    container_name: atlas-one-dashy
+    restart: unless-stopped
+    environment:
+      PORT: "4000"
+    volumes:
+      - ./apps/dashy/conf/conf.yml:/app/user-data/conf.yml:ro
+    networks:
+      - atlas-net
+    healthcheck:
+      test: ["CMD-SHELL", "node -e \"fetch('http://localhost:4000').then(()=>process.exit(0)).catch(()=>process.exit(1))\""]
+      interval: 20s
+      timeout: 5s
+      retries: 5
+      start_period: 40s
+
+networks:
+  atlas-net:
+    driver: bridge
+
+volumes:
+  atlas-postgres-data:
+

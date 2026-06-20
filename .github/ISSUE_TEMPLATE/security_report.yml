@@ -1,0 +1,23 @@
+name: Security Report
+description: Report a security concern for Atlas One
+title: "[Security] "
+labels: ["security"]
+body:
+	- type: markdown
+		attributes:
+			value: Please avoid public disclosure of sensitive vulnerabilities. Use SECURITY.md private reporting instructions when possible.
+	- type: textarea
+		id: summary
+		attributes:
+			label: Summary
+			description: Concise description of the vulnerability
+		validations:
+			required: true
+	- type: textarea
+		id: impact
+		attributes:
+			label: Impact
+			description: Potential confidentiality, integrity, or availability impact
+		validations:
+			required: true
+
