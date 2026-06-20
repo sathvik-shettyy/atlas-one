@@ -1,7 +1,7 @@
 import { FormEvent, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-export default function LoginPage(): JSX.Element {
+export default function LoginPage() {
 	const navigate = useNavigate();
 	const [username, setUsername] = useState("admin");
 	const [password, setPassword] = useState("AtlasOneAdmin123!");

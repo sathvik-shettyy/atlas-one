@@ -8,7 +8,7 @@ type Session = {
 	role?: string;
 };
 
-export default function DashboardPage(): JSX.Element {
+export default function DashboardPage() {
 	const navigate = useNavigate();
 	const [session, setSession] = useState<Session>({ authenticated: false });
 

@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 
-export default function WorkspacePage(): JSX.Element {
+export default function WorkspacePage() {
 	useEffect(() => {
 		window.location.assign("/workspace/");
 	}, []);

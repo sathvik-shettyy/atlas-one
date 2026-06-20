@@ -4,7 +4,7 @@ type StatusCardProps = {
 	healthy?: boolean;
 };
 
-export default function StatusCard({ title, value, healthy = true }: StatusCardProps): JSX.Element {
+export default function StatusCard({ title, value, healthy = true }: StatusCardProps) {
 	return (
 		<article className="status-card">
 			<header>{title}</header>
