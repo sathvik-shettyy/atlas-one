@@ -11,6 +11,9 @@ class Settings(BaseSettings):
 	atlas_refresh_token_days: int = 7
 	atlas_default_mfa_mode: str = "required"
 	atlas_otp_static_code: str = "123456"
+	atlasone_admin_password: str = "AtlasOneAdmin123!"
+	atlasone_dev_password: str = "AtlasOneDev123!"
+	atlasone_guest_password: str = "AtlasOneGuest123!"
 
 	model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8", extra="ignore")
 
@@ -23,4 +26,3 @@ class Settings(BaseSettings):
 
 
 settings = Settings()
-

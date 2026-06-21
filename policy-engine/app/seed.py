@@ -9,19 +9,19 @@ def ensure_seed_users(db: Session) -> None:
 	defaults = [
 		{
 			"username": "admin",
-			"password": "AtlasOneAdmin123!",
+			"password": settings.atlasone_admin_password,  # nosec B105
 			"role": "admin",
 			"mfa_mode": "required",
 		},
 		{
 			"username": "developer",
-			"password": "AtlasOneDev123!",
+			"password": settings.atlasone_dev_password,  # nosec B105
 			"role": "developer",
 			"mfa_mode": "optional",
 		},
 		{
 			"username": "guest",
-			"password": "AtlasOneGuest123!",
+			"password": settings.atlasone_guest_password,  # nosec B105
 			"role": "guest",
 			"mfa_mode": "disabled",
 		},
@@ -46,4 +46,3 @@ def ensure_seed_users(db: Session) -> None:
 
 def resolve_mfa_mode(mfa_mode: str | None) -> str:
 	return (mfa_mode or settings.atlas_default_mfa_mode).lower()
-

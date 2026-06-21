@@ -30,8 +30,6 @@ services:
       dockerfile: Dockerfile
     container_name: atlas-one-dashboard
     restart: unless-stopped
-    env_file:
-      - .env
     networks:
       - atlas-net
     healthcheck:
@@ -46,8 +44,6 @@ services:
       dockerfile: Dockerfile
     container_name: atlas-one-policy
     restart: unless-stopped
-    env_file:
-      - .env
     depends_on:
       postgres:
         condition: service_healthy
@@ -64,16 +60,16 @@ services:
     container_name: atlas-one-db
     restart: unless-stopped
     environment:
-      POSTGRES_DB: ${POSTGRES_DB}
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB:-atlasone}
+      POSTGRES_USER: ${POSTGRES_USER:-atlasone}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-atlasonepassword}
     volumes:
       - atlas-postgres-data:/var/lib/postgresql/data
       - ./database/postgres/init:/docker-entrypoint-initdb.d:ro
     networks:
       - atlas-net
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-atlasone} -d ${POSTGRES_DB:-atlasone}"]
       interval: 10s
       timeout: 5s
       retries: 10
@@ -86,15 +82,13 @@ services:
       - start-dev
       - --import-realm
       - --http-port=8090
-    env_file:
-      - .env
     environment:
       KC_DB: postgres
-      KC_DB_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB}
-      KC_DB_USERNAME: ${POSTGRES_USER}
-      KC_DB_PASSWORD: ${POSTGRES_PASSWORD}
-      KC_BOOTSTRAP_ADMIN_USERNAME: ${KEYCLOAK_ADMIN_USER}
-      KC_BOOTSTRAP_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
+      KC_DB_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB:-atlasone}
+      KC_DB_USERNAME: ${POSTGRES_USER:-atlasone}
+      KC_DB_PASSWORD: ${POSTGRES_PASSWORD:-atlasonepassword}
+      KC_BOOTSTRAP_ADMIN_USERNAME: ${KEYCLOAK_ADMIN_USER:-admin}
+      KC_BOOTSTRAP_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD:-admin123}
       KC_HOSTNAME_STRICT: "false"
       KC_PROXY_HEADERS: xforwarded
     depends_on:
@@ -133,4 +127,3 @@ networks:
 
 volumes:
   atlas-postgres-data:
-
