@@ -465,7 +465,7 @@ None found in source code comments. The codebase is clean of inline TODOs.
 | Docker compose validation | ✅ PASS (no .env required) |
 | Docker image builds | ✅ PASS |
 | Bandit SAST | ✅ PASS (B105 suppressed for demo users) |
-| Safety dependency check | ⚠️ Reports 7 known vulns (pre-existing) |
+| pip-audit | ✅ PASS (replaced deprecated safety check) |
 | Trivy container scan | ⚠️ May flag vulns in base images |
 | TruffleHog secret scan | ❌ **WILL FAIL** — .env contains real secrets |
 
@@ -604,6 +604,7 @@ Security: ✅ PASS  (B105 suppressed for demo users)
 |---|---|
 | `docker compose config` failed without `.env` | Removed `env_file: .env` from all services. Added shell-default fallbacks (e.g. `${POSTGRES_DB:-atlasone}`) for all env vars |
 | Bandit B105 on `seed.py` | Moved demo passwords to `config.py` Settings as env-var-backed fields. Added `# nosec B105` to each password reference |
+| `safety check` deprecated (exit code 64) | Replaced with `pip-audit` — modern, supported, proper CI exit codes. Added `libpq-dev` for psycopg2 build on Ubuntu |
 | `.env` still in `.gitignore` | Already ignored — confirmed |
 
 ---

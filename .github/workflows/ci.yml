@@ -63,11 +63,12 @@ jobs:
           python-version: "3.12"
       - name: Install security tools
         run: |
-          python -m pip install bandit safety
+          sudo apt-get update && sudo apt-get install -y --no-install-recommends libpq-dev
+          python -m pip install bandit pip-audit
       - name: Bandit
         run: python -m bandit -r policy-engine/app
-      - name: Safety
-        run: python -m safety check -r policy-engine/requirements.txt --full-report
+      - name: pip-audit
+        run: python -m pip_audit -r policy-engine/requirements.txt
       - name: Install Trivy
         run: |
           sudo apt-get update
