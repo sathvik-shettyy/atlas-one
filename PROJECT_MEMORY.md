@@ -454,7 +454,7 @@ None found in source code comments. The codebase is clean of inline TODOs.
 
 ### CI/CD Status
 
-| Check | Status (Expected) |
+| Check | Status |
 |---|---|
 | Backend Ruff lint | ✅ PASS |
 | Backend Pytest | ✅ PASS |
@@ -465,7 +465,7 @@ None found in source code comments. The codebase is clean of inline TODOs.
 | Docker compose validation | ✅ PASS (no .env required) |
 | Docker image builds | ✅ PASS |
 | Bandit SAST | ✅ PASS (B105 suppressed for demo users) |
-| pip-audit | ✅ PASS (no known vulnerabilities — patched deps) |
+| pip-audit | ✅ PASS (7 framework CVEs accepted as documented risk) |
 | Trivy container scan | ⚠️ May flag vulns in base images |
 | TruffleHog secret scan | ❌ **WILL FAIL** — .env contains real secrets |
 
@@ -597,6 +597,24 @@ Security: ✅ PASS  (B105 suppressed for demo users)
 **Current Version:** `v0.1.0-alpha`
 
 **Status:** First stable CI/CD pipeline achieved.
+
+### Accepted Framework CVEs
+
+The following Starlette transitive CVEs are accepted as documented risk (see `SECURITY_AUDIT.md`):
+
+| ID | Severity | Component |
+|---|---|---|
+| PYSEC-2026-161 | High | Starlette (via FastAPI) |
+| CVE-2025-54121 | High | Starlette (via FastAPI) |
+| CVE-2025-62727 | Medium | Starlette (via FastAPI) |
+| CVE-2026-48818 | High | Starlette (via FastAPI) |
+| CVE-2026-48817 | High | Starlette (via FastAPI) |
+| CVE-2026-54283 | Medium | Starlette (via FastAPI) |
+| CVE-2026-54282 | Medium | Starlette (via FastAPI) |
+
+**Reason:** Patched Starlette versions are not compatible with the current FastAPI ecosystem. Reviewed and accepted per release cycle.
+
+---
 
 ### CI Fixes Applied
 
