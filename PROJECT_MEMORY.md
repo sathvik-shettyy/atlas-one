@@ -465,7 +465,7 @@ None found in source code comments. The codebase is clean of inline TODOs.
 | Docker compose validation | ✅ PASS (no .env required) |
 | Docker image builds | ✅ PASS |
 | Bandit SAST | ✅ PASS (B105 suppressed for demo users) |
-| pip-audit | ✅ PASS (replaced deprecated safety check) |
+| pip-audit | ✅ PASS (no known vulnerabilities — patched deps) |
 | Trivy container scan | ⚠️ May flag vulns in base images |
 | TruffleHog secret scan | ❌ **WILL FAIL** — .env contains real secrets |
 
@@ -605,7 +605,19 @@ Security: ✅ PASS  (B105 suppressed for demo users)
 | `docker compose config` failed without `.env` | Removed `env_file: .env` from all services. Added shell-default fallbacks (e.g. `${POSTGRES_DB:-atlasone}`) for all env vars |
 | Bandit B105 on `seed.py` | Moved demo passwords to `config.py` Settings as env-var-backed fields. Added `# nosec B105` to each password reference |
 | `safety check` deprecated (exit code 64) | Replaced with `pip-audit` — modern, supported, proper CI exit codes. Added `libpq-dev` for psycopg2 build on Ubuntu |
+| `pip-audit` found real CVEs | Upgraded vulnerable packages: `python-jose` 3.3.0→3.4.0, `python-multipart` 0.0.9→0.0.20, `fastapi` 0.112.2→0.115.12, `pytest` 8.3.2→8.3.5 |
 | `.env` still in `.gitignore` | Already ignored — confirmed |
+
+---
+
+### Dependency Versions (Patched)
+
+| Package | Old Version | New Version | Reason |
+|---|---|---|---|
+| `python-jose` | 3.3.0 | 3.4.0 | CVE fix |
+| `python-multipart` | 0.0.9 | 0.0.20 | CVE fix |
+| `fastapi` | 0.112.2 | 0.115.12 | Pulls patched starlette |
+| `pytest` | 8.3.2 | 8.3.5 | CVE fix |
 
 ---
 
